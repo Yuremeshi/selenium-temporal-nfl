@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 import psycopg2
 import os
 
-FIRST_N_PLAYERS = 2
+FIRST_N_PLAYERS = 100
 
 def func_element(driver: WebDriver, by: By, locator: str, wait: int = 10) -> WebElement:
     return WebDriverWait(driver, wait).until(EC.presence_of_element_located((by, locator)))
@@ -36,6 +36,10 @@ async def selenium_scraper() -> None:
     for i in range(1, year_iter):
         if counter == FIRST_N_PLAYERS:
             break
+        if i > 1:
+            years_element.click()
+            years_elements = func_elements(driver, By.XPATH, '/html/body/main/div/div[2]/form/div[3]/div/div/div/div/span')
+            time.sleep(1)
         year_select = years_elements[i]
         year_select.click()
         teams_element = func_element(driver, By.ID, 'headlessui-combobox-input-:Rdl9uja:')
@@ -45,13 +49,17 @@ async def selenium_scraper() -> None:
         for j in range(teams_iter):
             if counter == FIRST_N_PLAYERS:
                 break
+            if j > 0:
+                teams_element.click()
+                teams_elements = func_elements(driver, By.XPATH, '/html/body/main/div/div[2]/form/div[2]/div/div/div/div/div')
+                time.sleep(1)
             team_select = teams_elements[j]
             team_select.click()
             button_element = func_element(driver, By.XPATH, '/html/body/main/div/div[2]/form/div[3]/button')
             button_element.click()
             player_elements = func_elements(driver, By.CLASS_NAME, 'border-2.border-gray-400.p-3.cursor-pointer.mb-2.rounded-md')
             player_iter = len(player_elements)
-            
+            time.sleep(1)            
             for k in range(player_iter):
                 if counter == FIRST_N_PLAYERS:
                     break
