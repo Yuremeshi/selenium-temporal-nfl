@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 import psycopg2
 import os
 
-FIRST_N_PLAYERS = 100
+FIRST_N_PLAYERS = 200
 
 def func_element(driver: WebDriver, by: By, locator: str, wait: int = 10) -> WebElement:
     return WebDriverWait(driver, wait).until(EC.presence_of_element_located((by, locator)))
@@ -37,6 +37,7 @@ async def selenium_scraper() -> None:
         if counter == FIRST_N_PLAYERS:
             break
         if i > 1:
+            years_element = func_element(driver, By.ID, 'headlessui-listbox-button-:R1lt9uja:')
             years_element.click()
             years_elements = func_elements(driver, By.XPATH, '/html/body/main/div/div[2]/form/div[3]/div/div/div/div/span')
             time.sleep(1)
@@ -50,6 +51,7 @@ async def selenium_scraper() -> None:
             if counter == FIRST_N_PLAYERS:
                 break
             if j > 0:
+                teams_element = func_element(driver, By.ID, 'headlessui-combobox-input-:Rdl9uja:')
                 teams_element.click()
                 teams_elements = func_elements(driver, By.XPATH, '/html/body/main/div/div[2]/form/div[2]/div/div/div/div/div')
                 time.sleep(1)
@@ -57,12 +59,14 @@ async def selenium_scraper() -> None:
             team_select.click()
             button_element = func_element(driver, By.XPATH, '/html/body/main/div/div[2]/form/div[3]/button')
             button_element.click()
+            time.sleep(1)
             player_elements = func_elements(driver, By.CLASS_NAME, 'border-2.border-gray-400.p-3.cursor-pointer.mb-2.rounded-md')
             player_iter = len(player_elements)
             time.sleep(1)            
             for k in range(player_iter):
                 if counter == FIRST_N_PLAYERS:
                     break
+                player_elements = func_elements(driver, By.CLASS_NAME, 'border-2.border-gray-400.p-3.cursor-pointer.mb-2.rounded-md')
                 player_select = player_elements[k]
                 player_select.click()
                 player_first = func_element(driver, By.XPATH, '/html/body/div[2]/div/div/div/div[2]/div/div/div/div/div[1]/div[1]/h1[1]')
